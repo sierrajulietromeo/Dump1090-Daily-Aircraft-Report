@@ -43,11 +43,14 @@ $user_set_array['metric'] ? $earth_radius = 6371 : $earth_radius = 3440;
 
 // fetch receiver.json and read receiver latitude and longitude
 $json_receiver_location = json_decode(file_get_contents($user_set_array['url_json'] . 'receiver.json'), true);
-isset($json_receiver_location['lat']) ? $rec_lat = $json_receiver_location['lat'] : $rec_lat = 0;
-isset($json_receiver_location['lon']) ? $rec_lon = $json_receiver_location['lon'] : $rec_lon = 0;
+isset($json_receiver_location['lat']) ? $rec_lat = $json_receiver_location['lat'] : $rec_lat = 51.606883;
+isset($json_receiver_location['lon']) ? $rec_lon = $json_receiver_location['lon'] : $rec_lon = -0.178898;
+
+ 
+
 
 // set csv-file column header names
-$csv_header = '"Transponder"' . "\t" . '"Messages"' . "\t" . '"Flight"' . "\t" . '"Category"' . "\t" . '"Squawk"' . "\t" . '"First Seen"' . "\t" . '"First Latitude"' . "\t" . '"First Longitude"' . "\t" . '"First Altitude"' . "\t" . '"Last Seen"' . "\t" . '"Last Latitude"' . "\t" . '"Last Longitude"' . "\t" . '"Last Altitude"' . "\t" . '"Low Dist"' . "\t" . '"High Dist"' . "\t" . '"Low Rssi"' . "\t" . '"High Rssi"' . "\t" . '"Mlat"' . PHP_EOL . PHP_EOL;
+$csv_header = '"Transponder"' . "\t" . '"Messages"' . "\t" .'"First Speed"' . "\t" .'"Last Speed"' . "\t" . '"Flight"' . "\t" . '"Category"' . "\t" . '"Squawk"' . "\t" . '"First Seen"' . "\t" . '"First Latitude"' . "\t" . '"First Longitude"' . "\t" . '"First Altitude"' . "\t" . '"Last Seen"' . "\t" . '"Last Latitude"' . "\t" . '"Last Longitude"' . "\t" . '"Last Altitude"' . "\t" . '"Low Dist"' . "\t" . '"High Dist"' . "\t" . '"Low Rssi"' . "\t" . '"High Rssi"' . "\t" . '"Mlat"' . PHP_EOL . PHP_EOL;
 
 // at script restart try to resume with already harvested data of this day
 if (file_exists($user_set_array['tmp_directory'] . 'ac_counter.tmp') && date('Ymd') == date('Ymd', filemtime($user_set_array['tmp_directory'] . 'ac_counter.tmp'))) {
@@ -114,6 +117,7 @@ while (true) {
 	foreach ($json_data_array['aircraft'] as $row) {
 		isset($row['hex']) ? $ac_hex = $row['hex'] : $ac_hex = '';
 		isset($row['flight']) ? $ac_flight = trim($row['flight']) : $ac_flight = '';
+		isset($row['speed']) ? $ac_speed = trim($row['speed']) : $ac_speed = '';
 		isset($row['category']) ? $ac_category = $row['category'] : $ac_category = '';
 		isset($row['squawk']) ? $ac_squawk = $row['squawk'] : $ac_squawk = '';
 		isset($row['altitude']) ? $ac_altitude = $row['altitude'] : $ac_altitude = '';
@@ -127,6 +131,9 @@ while (true) {
 			isset($csv_array[$ac_hex]['msg']) ? $csv_array[$ac_hex]['msg']++ : $csv_array[$ac_hex]['msg'] = 1;
 			if (!isset($csv_array[$ac_hex]['flight']) && $ac_flight == '') { $csv_array[$ac_hex]['flight'] = ''; }
 			else if ($ac_flight != '') { $csv_array[$ac_hex]['flight'] = $ac_flight; }
+			if (!isset($csv_array[$ac_hex]['f_spe']) || $csv_array[$ac_hex]['f_spe'] == '') $csv_array[$ac_hex]['f_spe'] = $ac_speed;
+			if (!isset($csv_array[$ac_hex]['l_spe']) && $ac_now == '') { $csv_array[$ac_hex]['l_spe'] = ''; }
+			else if ($ac_now != '') { $csv_array[$ac_hex]['l_spe'] = $ac_now; }
 			if (!isset($csv_array[$ac_hex]['category']) && $ac_category == '') { $csv_array[$ac_hex]['category'] = ''; }
 			else if ($ac_category != '') { $csv_array[$ac_hex]['category'] = $ac_category; }
 			if (!isset($csv_array[$ac_hex]['squawk']) && $ac_squawk == '') { $csv_array[$ac_hex]['squawk'] = ''; }
