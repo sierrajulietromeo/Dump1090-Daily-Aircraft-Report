@@ -5,15 +5,11 @@
 #var_dump(ini_get_all());
 #ini_set('error_reporting', E_ALL);
 
-// below a sample create statement for database table
-// CREATE TABLE daily_report (id INT NOT NULL AUTO_INCREMENT, report_date VARCHAR(100), transponder VARCHAR(100), messages VARCHAR(100), flight VARCHAR(100), category VARCHAR(100), squawk VARCHAR(100), first_seen VARCHAR(100), first_latitude VARCHAR(100), first_longitude VARCHAR(100), first_altitude VARCHAR(100), last_seen VARCHAR(100), last_latitude VARCHAR(100), last_longitude VARCHAR(100), last_altitude VARCHAR(100), low_dist VARCHAR(100), high_dist VARCHAR(100), low_rssi VARCHAR(100), high_rssi VARCHAR(100), mlat VARCHAR(100), PRIMARY KEY (id))
-
 // set path to aircraft.json file
 $user_set_array['url_json'] = 'http://127.0.0.1/dump1090/data/';
 
-// set email and/or logfile and/or database option to true or false
-$user_set_array['email'] = false;    $user_set_array['log'] = true;
-$user_set_array['database'] = false;
+// set logfile to true or false
+$user_set_array['log'] = true;
 
 // set path to directory where log files to store to
 $user_set_array['log_directory'] = '/home/pi/ac_counter_log/';
@@ -21,23 +17,11 @@ $user_set_array['log_directory'] = '/home/pi/ac_counter_log/';
 // default path to temporary directory where tmp files to store to
 $user_set_array['tmp_directory'] = '/run/ac_counter_tmp/';
 
-// set your google email-address daily reports to send to
-$user_set_array['email_address'] = 'YOUR_EMAIL@gmail.com';
-
-// set the absolute limit of alert-messages default is 500
-$user_set_array['mailer_limit'] = 500;
-
 // set to true for units metric instead nautical
 $user_set_array['metric'] = false;
 
-// set parameters for database connection
-$user_set_array['db_user'] = 'root';    $user_set_array['db_pass'] = 'YOUR_PASSWORD';
-$user_set_array['db_name'] = 'adsb';    $user_set_array['db_host'] = '127.0.0.1';
-
 // set only to true for script function test run -> will 3 times email/log/db after about 1/2/3 minutes
 $user_set_array['test_mode'] = false;
-
-
 
 // function to compute distance between receiver and aircraft
 function func_haversine($lat_from, $lon_from, $lat_to, $lon_to, $earth_radius) {
@@ -109,7 +93,7 @@ while (true) {
 			$body .= 'Content-Disposition: attachment; filename="ac_' . date('Y_m_d', time() - 86400) . '.xls"' . PHP_EOL . PHP_EOL;
 			$body .= chunk_split(base64_encode($csv)) . PHP_EOL . PHP_EOL;
 			$body .= '--' . $boundary . '--';
-			mail($user_set_array['email_address'], 'Daily Aircraft Stats', $body, $header);
+			
 		}
 		if ($user_set_array['log'] == true) {
 			$file_to_write = gzencode($csv);
@@ -117,20 +101,7 @@ while (true) {
 			if (!file_exists($user_set_array['log_directory'])) mkdir($user_set_array['log_directory'], 0755, true);
 			file_put_contents($file_name_to_write, $file_to_write, LOCK_EX);
 		}
-		if ($user_set_array['database'] == true) {
-			$sql = '';
-			foreach ($csv_array as $key => $value) {
-				$sql .= "INSERT INTO daily_report VALUES (NULL, '" . date('Ymd', time() - 86400) . "', '" . implode("', '", $value) . "');" . PHP_EOL;
-			}
-			try {
-				$db = new PDO('mysql:host=' . $user_set_array['db_host'] . ';dbname=' . $user_set_array['db_name'] . '', $user_set_array['db_user'], $user_set_array['db_pass']); $db_insert = '';
-				$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-				if ($sql) { $db->exec($sql); $db_insert = 'inserted'; }
-				$db = null;
-			} catch (PDOException $db_error) {
-				$db_insert = PHP_EOL . $db_error->getMessage();
-			}
-		}
+		
 		if (!$user_set_array['test_mode']) $csv_array = array();
 		$sent_messages++;
 	}
