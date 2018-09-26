@@ -41,10 +41,9 @@ date_default_timezone_set('UTC');
 $current_day = date('Ymd');
 $user_set_array['metric'] ? $earth_radius = 6371 : $earth_radius = 3440;
 
-// fetch receiver.json and read receiver latitude and longitude
-$json_receiver_location = json_decode(file_get_contents($user_set_array['url_json'] . 'receiver.json'), true);
-isset($json_receiver_location['lat']) ? $rec_lat = $json_receiver_location['lat'] : $rec_lat = 51.606883;
-isset($json_receiver_location['lon']) ? $rec_lon = $json_receiver_location['lon'] : $rec_lon = -0.178898;
+// Receiver latitude and longitude
+$rec_lat = 51.606883;
+$rec_lon = -0.178898;
 
  
 
@@ -72,7 +71,7 @@ while (true) {
 	}
 	$tmp_write_trigger++;
 
-	// at midnight generate csv-file and submit email and/or write log-file and/or database
+	// at midnight generate csv-file and write log-file.
 	if ($current_day < date('Ymd') || ($user_set_array['test_mode'] && ($i == 60 || $i == 120 || $i == 180))) {
 		$csv = '';
 		$csv .= $csv_header;
@@ -80,24 +79,7 @@ while (true) {
 		foreach ($csv_array as $key => $value) {
 			$csv .= "\"\t\0" . implode("\"\t\"", str_replace('.', ',', $value)) . "\"" . PHP_EOL;
 		}
-		if ($user_set_array['email'] == true && $sent_messages < $user_set_array['mailer_limit']) {
-			$boundary = str_replace(' ', '.', microtime());
-			$header = 'From: ' . $user_set_array['email_address'] . PHP_EOL;
-			$header .= 'Reply-To: ' . $user_set_array['email_address'] . PHP_EOL;
-			$header .= 'MIME-Version: 1.0' . PHP_EOL;
-			$header .= 'Content-Type: multipart/mixed; boundary="' . $boundary . '"' . PHP_EOL . PHP_EOL;
-			$body = '--' . $boundary . PHP_EOL;
-			$body .= 'Content-type:text/plain; charset=iso-8859-1' . PHP_EOL;
-			$body .= 'Content-Transfer-Encoding: 7bit' . PHP_EOL . PHP_EOL;
-			$body .= number_format(count($csv_array), 0, ',', '.') . ' Aircrafts @ ' . number_format(array_sum(array_column($csv_array, 'msg')), 0, ',', '.') . ' Messages - Yesterday UTC' . PHP_EOL . PHP_EOL;
-			$body .= '--' . $boundary . PHP_EOL;
-			$body .= 'Content-Type: application/octet-stream; name="ac_' . date('Y_m_d', time() - 86400) . '.xls"' . PHP_EOL;
-			$body .= 'Content-Transfer-Encoding: base64' . PHP_EOL;
-			$body .= 'Content-Disposition: attachment; filename="ac_' . date('Y_m_d', time() - 86400) . '.xls"' . PHP_EOL . PHP_EOL;
-			$body .= chunk_split(base64_encode($csv)) . PHP_EOL . PHP_EOL;
-			$body .= '--' . $boundary . '--';
-			
-		}
+		
 		if ($user_set_array['log'] == true) {
 			$file_to_write = gzencode($csv);
 			$file_name_to_write = $user_set_array['log_directory'] . 'ac_' . date('Y_m_d_i', time() - 86400) . '.xls.zip';
