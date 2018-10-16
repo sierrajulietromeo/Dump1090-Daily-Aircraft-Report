@@ -114,8 +114,8 @@ while (true) {
 			if (!isset($csv_array[$ac_hex]['flight']) && $ac_flight == '') { $csv_array[$ac_hex]['flight'] = ''; }
 			else if ($ac_flight != '') { $csv_array[$ac_hex]['flight'] = $ac_flight; }
 			if (!isset($csv_array[$ac_hex]['f_spe']) || $csv_array[$ac_hex]['f_spe'] == '') $csv_array[$ac_hex]['f_spe'] = $ac_speed;
-			if (!isset($csv_array[$ac_hex]['l_spe']) && $ac_now == '') { $csv_array[$ac_hex]['l_spe'] = ''; }
-			else if ($ac_now != '') { $csv_array[$ac_hex]['l_spe'] = $ac_now; }
+			if (!isset($csv_array[$ac_hex]['l_spe']) && $ac_speed == '') { $csv_array[$ac_hex]['l_spe'] = ''; }
+			else if ($ac_speed != '') { $csv_array[$ac_hex]['l_spe'] = $ac_speed; }
 			if (!isset($csv_array[$ac_hex]['category']) && $ac_category == '') { $csv_array[$ac_hex]['category'] = ''; }
 			else if ($ac_category != '') { $csv_array[$ac_hex]['category'] = $ac_category; }
 			if (!isset($csv_array[$ac_hex]['squawk']) && $ac_squawk == '') { $csv_array[$ac_hex]['squawk'] = ''; }
