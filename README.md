@@ -2,7 +2,7 @@
 
 Aggregates Dump1090-mutability messages to a daily log-file. (Suitable for my needs) See original project if you require more details.
 
-![Alt text](screen.png?raw=true "Sample Report")
+![Alt text](ScreenCapture.png?raw=true "Sample Report")
 
 
   
