@@ -49,7 +49,7 @@ $rec_lon = -0.178898;
 
 
 // set csv-file column header names
-$csv_header = '"Transponder"' . "\t" . '"Messages"' . "\t" .'"First Speed"' . "\t" .'"Last Speed"' . "\t" . '"Flight"' . "\t" . '"Category"' . "\t" . '"Squawk"' . "\t" . '"First Seen"' . "\t" . '"First Latitude"' . "\t" . '"First Longitude"' . "\t" . '"First Altitude"' . "\t" . '"Last Seen"' . "\t" . '"Last Latitude"' . "\t" . '"Last Longitude"' . "\t" . '"Last Altitude"' . "\t" . '"Low Dist"' . "\t" . '"High Dist"' . "\t" . '"Low Rssi"' . "\t" . '"High Rssi"' . "\t" . '"Mlat"' . PHP_EOL . PHP_EOL;
+$csv_header = '"Transponder"' . "\t" . '"Messages"' . "\t" .'"Flight"' . "\t" .'"First_Speed"' . "\t" . '"Last_Speed"' . "\t" . '"Category"' . "\t" . '"Squawk"' . "\t" . '"First_Seen"' . "\t" . '"First_Latitude"' . "\t" . '"First_Longitude"' . "\t" . '"First_Altitude"' . "\t" . '"Last_Seen"' . "\t" . '"Last_Latitude"' . "\t" . '"Last_Longitude"' . "\t" . '"Last_Altitude"' . "\t" . '"Low_Dist"' . "\t" . '"High_Dist"' . "\t" . '"Low_Rssi"' . "\t" . '"High_Rssi"' . "\t" . '"Mlat"' . PHP_EOL . PHP_EOL;
 
 // at script restart try to resume with already harvested data of this day
 if (file_exists($user_set_array['tmp_directory'] . 'ac_counter.tmp') && date('Ymd') == date('Ymd', filemtime($user_set_array['tmp_directory'] . 'ac_counter.tmp'))) {
