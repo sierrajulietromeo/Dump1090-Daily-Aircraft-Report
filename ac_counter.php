@@ -6,7 +6,7 @@
 #ini_set('error_reporting', E_ALL);
 
 // set path to aircraft.json file
-$user_set_array['url_json'] = 'http://127.0.0.1/dump1090/data/';
+$user_set_array['url_json'] = 'http://127.0.0.1/dump1090-fa/data/';
 
 // set logfile to true or false
 $user_set_array['log'] = true;
@@ -42,8 +42,8 @@ $current_day = date('Ymd');
 $user_set_array['metric'] ? $earth_radius = 6371 : $earth_radius = 3440;
 
 // Receiver latitude and longitude
-$rec_lat = 51.606883;
-$rec_lon = -0.178898;
+$rec_lat = 51.557;
+$rec_lon = -0.042;
 
  
 
